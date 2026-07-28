@@ -1,0 +1,788 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+
+  <title>Dear Alodie Oniria</title>
+
+  <meta name="description" content="A little diary written with love." />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:title" content="Dear Alodie Oniria" />
+  <meta property="og:description" content="A little diary written with love." />
+  <meta property="og:image" content="preview-card.jpg" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Dear Alodie Oniria" />
+  <meta name="twitter:description" content="A little diary written with love." />
+  <meta name="twitter:image" content="preview-card.jpg" />
+
+  <style>
+    :root {
+      --cream: #fff1e8;
+      --soft: rgba(255, 240, 232, 0.88);
+      --muted: rgba(255, 224, 217, 0.72);
+      --line: rgba(255, 235, 224, 0.18);
+      --dark: rgba(9, 6, 8, 0.58);
+      --glass: rgba(26, 15, 19, 0.34);
+      --shadow: rgba(0, 0, 0, 0.50);
+    }
+
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html,
+    body {
+      margin: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #070507;
+      color: var(--cream);
+      font-family: Georgia, "Times New Roman", serif;
+    }
+
+    body {
+      position: fixed;
+      inset: 0;
+      overscroll-behavior: none;
+    }
+
+    .grain {
+      position: fixed;
+      inset: 0;
+      z-index: 100;
+      pointer-events: none;
+      opacity: 0.10;
+      mix-blend-mode: soft-light;
+      background-image:
+        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 160 160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)' opacity='.55'/%3E%3C/svg%3E");
+    }
+
+    .book {
+      position: relative;
+      width: 100vw;
+      height: 100dvh;
+      overflow: hidden;
+      perspective: 1800px;
+      background: #070507;
+    }
+
+    .page {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100dvh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding:
+        calc(18px + env(safe-area-inset-top))
+        16px
+        calc(92px + env(safe-area-inset-bottom));
+      opacity: 0;
+      pointer-events: none;
+      transform: scale(0.985);
+      transition: opacity 520ms ease, transform 520ms ease;
+      overflow: hidden;
+      transform-style: preserve-3d;
+      backface-visibility: hidden;
+    }
+
+    .page.active {
+      opacity: 1;
+      pointer-events: auto;
+      transform: scale(1);
+      z-index: 5;
+    }
+
+    .page::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -3;
+      background:
+        linear-gradient(rgba(7, 5, 7, 0.22), rgba(7, 5, 7, 0.55)),
+        url("background.jpg") center / cover no-repeat;
+      filter: saturate(0.96) brightness(0.92);
+      transform: scale(1.035);
+    }
+
+    .page::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: -2;
+      pointer-events: none;
+      background:
+        radial-gradient(circle at center, rgba(255,255,255,0.06), transparent 46%),
+        linear-gradient(to bottom, rgba(0,0,0,0.05), rgba(0,0,0,0.28));
+    }
+
+    .cover-stack {
+      width: min(92vw, 760px);
+      height: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      gap: clamp(10px, 1.8dvh, 18px);
+      text-align: center;
+      transform: translateY(-5px);
+    }
+
+    .cover-photo-wrap {
+      width: min(91vw, 720px);
+      padding: 7px;
+      border-radius: 24px;
+      border: 1px solid rgba(255, 240, 232, 0.22);
+      background: rgba(255, 246, 238, 0.08);
+      box-shadow:
+        0 22px 60px rgba(0, 0, 0, 0.46),
+        0 0 34px rgba(150, 60, 78, 0.17);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+    }
+
+    .cover-photo {
+      display: block;
+      width: 100%;
+      height: auto;
+      max-height: 34dvh;
+      object-fit: contain;
+      border-radius: 18px;
+    }
+
+    .cover-label {
+      margin: 4px 0 0;
+      font-family: Arial, sans-serif;
+      font-size: clamp(0.56rem, 2.2vw, 0.72rem);
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(255, 235, 224, 0.74);
+    }
+
+    .cover h1 {
+      margin: 0;
+      font-weight: 400;
+      font-size: clamp(2rem, 9vw, 4.65rem);
+      line-height: 0.92;
+      color: rgba(255, 246, 240, 0.98);
+      text-shadow: 0 10px 34px rgba(0, 0, 0, 0.55);
+    }
+
+    .cover-names {
+      margin: 0;
+      font-size: clamp(0.84rem, 3.35vw, 1.14rem);
+      line-height: 1.48;
+      color: rgba(255, 236, 226, 0.86);
+      text-shadow: 0 8px 24px rgba(0, 0, 0, 0.46);
+    }
+
+    .cover-quote,
+    .final-quote {
+      margin: 0;
+      font-size: clamp(0.95rem, 3.75vw, 1.34rem);
+      font-style: italic;
+      color: rgba(255, 220, 216, 0.96);
+      text-shadow: 0 7px 20px rgba(0, 0, 0, 0.46);
+    }
+
+    .diary-box {
+      width: min(92vw, 720px);
+      max-height: calc(100dvh - 130px - env(safe-area-inset-bottom));
+      padding: clamp(19px, 5vw, 34px);
+      border-radius: 28px;
+      border: 1px solid var(--line);
+      background:
+        linear-gradient(135deg, rgba(28, 17, 21, 0.38), rgba(16, 10, 13, 0.20));
+      box-shadow:
+        0 24px 70px rgba(0, 0, 0, 0.40),
+        inset 0 1px 0 rgba(255, 255, 255, 0.05);
+      backdrop-filter: blur(6px);
+      -webkit-backdrop-filter: blur(6px);
+      overflow: hidden;
+    }
+
+    .kicker {
+      display: block;
+      margin-bottom: 10px;
+      font-family: Arial, sans-serif;
+      font-size: clamp(0.52rem, 2vw, 0.70rem);
+      letter-spacing: 0.32em;
+      text-transform: uppercase;
+      color: rgba(255, 228, 218, 0.66);
+    }
+
+    .diary-box h2 {
+      margin: 0 0 15px;
+      font-weight: 400;
+      font-size: clamp(1.46rem, 6.35vw, 3rem);
+      line-height: 1.02;
+      color: rgba(255, 246, 239, 0.98);
+      text-shadow: 0 10px 28px rgba(0, 0, 0, 0.42);
+    }
+
+    .diary-box p {
+      margin: 0;
+      font-size: clamp(0.76rem, 3vw, 1.02rem);
+      line-height: 1.56;
+      color: rgba(255, 242, 235, 0.91);
+      text-shadow: 0 3px 14px rgba(0, 0, 0, 0.38);
+    }
+
+    .diary-box p + p {
+      margin-top: 11px;
+    }
+
+    .final-quote {
+      margin-top: 18px !important;
+      color: rgba(255, 213, 210, 0.95) !important;
+    }
+
+    .nav-btn {
+      position: absolute;
+      left: 50%;
+      bottom: calc(22px + env(safe-area-inset-bottom));
+      z-index: 20;
+      transform: translateX(-50%);
+      width: min(86vw, 430px);
+      min-height: 50px;
+      padding: 13px 18px;
+      border-radius: 999px;
+      border: 1px solid rgba(255, 226, 220, 0.30);
+      background:
+        linear-gradient(180deg, rgba(54, 24, 34, 0.78), rgba(26, 12, 18, 0.78));
+      color: rgba(255, 246, 239, 0.96);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(0.74rem, 3vw, 0.98rem);
+      line-height: 1.25;
+      box-shadow:
+        0 12px 34px rgba(0, 0, 0, 0.42),
+        0 0 26px rgba(143, 47, 63, 0.20);
+      backdrop-filter: blur(10px);
+      -webkit-backdrop-filter: blur(10px);
+    }
+
+    .nav-btn:active {
+      transform: translateX(-50%) translateY(1px) scale(0.99);
+    }
+
+    .flip-leaf {
+      opacity: 1 !important;
+      pointer-events: none !important;
+      z-index: 60 !important;
+      box-shadow:
+        38px 0 80px rgba(0, 0, 0, 0.48),
+        inset -34px 0 54px rgba(0, 0, 0, 0.34);
+    }
+
+    .flip-leaf.forward {
+      transform-origin: left center;
+      animation: pageTurnForward 1.55s cubic-bezier(0.66, 0.02, 0.20, 1) both;
+    }
+
+    .flip-leaf.backward {
+      transform-origin: right center;
+      animation: pageTurnBackward 1.55s cubic-bezier(0.66, 0.02, 0.20, 1) both;
+    }
+
+    .flip-leaf::after {
+      background:
+        linear-gradient(
+          to left,
+          rgba(255, 246, 230, 0.16),
+          rgba(0, 0, 0, 0.16) 38%,
+          rgba(0, 0, 0, 0.52)
+        ) !important;
+      z-index: 10;
+    }
+
+    @keyframes pageTurnForward {
+      0% {
+        transform: perspective(1800px) rotateY(0deg) translateX(0) scale(1);
+        filter: brightness(1);
+      }
+
+      35% {
+        transform: perspective(1800px) rotateY(-68deg) translateX(-7px) scale(0.99);
+        filter: brightness(0.78);
+      }
+
+      62% {
+        transform: perspective(1800px) rotateY(-118deg) translateX(-18px) scale(0.98);
+        filter: brightness(0.55);
+      }
+
+      100% {
+        transform: perspective(1800px) rotateY(-180deg) translateX(-34px) scale(0.965);
+        filter: brightness(0.34);
+      }
+    }
+
+    @keyframes pageTurnBackward {
+      0% {
+        transform: perspective(1800px) rotateY(0deg) translateX(0) scale(1);
+        filter: brightness(1);
+      }
+
+      35% {
+        transform: perspective(1800px) rotateY(68deg) translateX(7px) scale(0.99);
+        filter: brightness(0.78);
+      }
+
+      62% {
+        transform: perspective(1800px) rotateY(118deg) translateX(18px) scale(0.98);
+        filter: brightness(0.55);
+      }
+
+      100% {
+        transform: perspective(1800px) rotateY(180deg) translateX(34px) scale(0.965);
+        filter: brightness(0.34);
+      }
+    }
+
+    @media (max-height: 730px) {
+      .cover-photo {
+        max-height: 27dvh;
+      }
+
+      .cover-stack {
+        gap: 8px;
+      }
+
+      .cover h1 {
+        font-size: clamp(1.68rem, 7.4vw, 3.1rem);
+      }
+
+      .cover-names {
+        font-size: clamp(0.73rem, 2.85vw, 0.94rem);
+        line-height: 1.30;
+      }
+
+      .cover-quote {
+        font-size: clamp(0.80rem, 3.1vw, 1rem);
+      }
+
+      .diary-box {
+        max-height: calc(100dvh - 112px - env(safe-area-inset-bottom));
+        padding: 17px 16px;
+      }
+
+      .diary-box h2 {
+        margin-bottom: 10px;
+        font-size: clamp(1.24rem, 5.5vw, 2.05rem);
+      }
+
+      .diary-box p {
+        font-size: clamp(0.66rem, 2.58vw, 0.83rem);
+        line-height: 1.40;
+      }
+
+      .diary-box p + p {
+        margin-top: 8px;
+      }
+
+      .kicker {
+        margin-bottom: 7px;
+        font-size: 0.50rem;
+      }
+
+      .nav-btn {
+        bottom: calc(14px + env(safe-area-inset-bottom));
+        min-height: 42px;
+        padding: 10px 14px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="grain"></div>
+
+  <audio id="music" src="daylight.mp3" preload="auto" loop></audio>
+
+  <main class="book" id="book">
+    <section class="page cover active">
+      <div class="cover-stack">
+        <div class="cover-photo-wrap">
+          <img class="cover-photo" src="cover.jpg" alt="cover">
+        </div>
+
+        <p class="cover-label">A LITTLE DIARY FOR</p>
+
+        <h1>Alodie Oniria</h1>
+
+        <p class="cover-names">
+          Giovanni Mahendra<br>
+          &<br>
+          Alodie Oniria
+        </p>
+
+        <p class="cover-quote">À toi, mon plus tendre chapitre.</p>
+      </div>
+
+      <button class="nav-btn" id="openBtn">
+        press this if my girlfriend is too cute for this world
+      </button>
+    </section>
+
+    <section class="page diary">
+      <article class="diary-box">
+        <span class="kicker">HALAMAN PERTAMA</span>
+        <h2>sebelum halaman ini benar benar dibuka</h2>
+
+        <p>
+          Aku menulis ini bukan karena aku paling pandai menyusun kata kata, melainkan karena ada rasa yang terlalu lama berdiri di ambang dada.
+        </p>
+
+        <p>
+          Ia mengetuk pelan pelan, meminta tempat, meminta tubuhku berhenti pura pura kuat hanya untuk mengatakan bahwa kau adalah salah satu hal paling lembut yang pernah semesta titipkan kepadaku.
+        </p>
+
+        <p>
+          Maka bila halaman ini terasa seperti doa, bacalah ia dengan hati yang tenang. Sebab setiap aksara di sini berjalan menuju satu alamat yang sama: dirimu.
+        </p>
+      </article>
+
+      <button class="nav-btn nextBtn">buka halaman berikutnya</button>
+    </section>
+
+    <section class="page diary">
+      <article class="diary-box">
+        <span class="kicker">HALAMAN KEDUA</span>
+        <h2>tentang datangmu yang tidak bising</h2>
+
+        <p>
+          Kau datang tidak seperti petir yang memecah langit. Kau datang seperti cahaya pagi yang menyusup diam diam lewat celah tirai.
+        </p>
+
+        <p>
+          Tidak memaksa, tidak tergesa, tetapi tiba tiba saja ada bagian dalam hidupku yang terasa lebih terang dari sebelumnya.
+        </p>
+
+        <p>
+          Barangkali begitulah cara orang yang tepat hadir. Tidak selalu dengan gemuruh, kadang cukup dengan keberadaan yang membuat seseorang ingin bertahan sedikit lebih lama.
+        </p>
+      </article>
+
+      <button class="nav-btn nextBtn">lanjutkan</button>
+    </section>
+
+    <section class="page diary">
+      <article class="diary-box">
+        <span class="kicker">HALAMAN KETIGA</span>
+        <h2>aku menemukan rumah dalam dirimu</h2>
+
+        <p>
+          Ada banyak tempat yang bisa disebut pulang, tetapi tidak semuanya mampu membuat hati berhenti berlari.
+        </p>
+
+        <p>
+          Lalu kau hadir dengan cara yang sederhana. Dari perhatian kecil, dari tanya yang terdengar biasa, dari khawatir yang membuatku merasa tidak dibiarkan sendirian di tengah riuh dunia.
+        </p>
+
+        <p>
+          Sejak itu aku paham, rumah tidak selalu punya pintu dan jendela. Kadang rumah adalah seseorang yang membuat kita merasa aman hanya karena ia ada.
+        </p>
+      </article>
+
+      <button class="nav-btn nextBtn">halaman selanjutnya</button>
+    </section>
+
+    <section class="page diary">
+      <article class="diary-box">
+        <span class="kicker">HALAMAN KEEMPAT</span>
+        <h2>cantik yang tinggal lebih jauh</h2>
+
+        <p>
+          Ada cantik yang selesai di mata, lalu hilang ketika waktu berjalan. Tetapi cantikmu tidak tinggal di sana saja.
+        </p>
+
+        <p>
+          Ia ada di caramu memperhatikan, di caramu mengkhawatirkan, di caramu membuat sesuatu yang berat terasa sedikit lebih mungkin untuk dilewati.
+        </p>
+
+        <p>
+          Dan aku, yang sering kehabisan bahasa untuk menjelaskanmu, hanya bisa diam diam bersyukur karena pernah mengenal seseorang seindah itu.
+        </p>
+      </article>
+
+      <button class="nav-btn nextBtn">teruskan</button>
+    </section>
+
+    <section class="page diary">
+      <article class="diary-box">
+        <span class="kicker">HALAMAN KELIMA</span>
+        <h2>kalau dunia sedang tidak berpihak</h2>
+
+        <p>
+          Ada hari hari ketika bumintala terasa terlalu berat untuk dipijak. Ada saat ketika suara di kepala lebih ramai daripada jalanan paling sibuk.
+        </p>
+
+        <p>
+          Namun entah bagaimana, mengingatmu membuat semuanya tidak langsung selesai, tetapi menjadi lebih sanggup kutanggung.
+        </p>
+
+        <p>
+          Kau tidak selalu mengubah badai menjadi reda. Kadang kau hanya menjadi alasan kecil mengapa aku masih ingin menunggu langit kembali cerah.
+        </p>
+      </article>
+
+      <button class="nav-btn nextBtn">buka lagi</button>
+    </section>
+
+    <section class="page diary">
+      <article class="diary-box">
+        <span class="kicker">HALAMAN KEENAM</span>
+        <h2>ada tenang yang bernama kau</h2>
+
+        <p>
+          Tenang tidak selalu berarti tidak ada luka. Tenang kadang berarti ada seseorang yang membuat luka terasa tidak perlu disembunyikan sepanjang waktu.
+        </p>
+
+        <p>
+          Bersamamu, aku tidak merasa harus selalu menjadi paling kuat. Aku boleh lelah, boleh diam, boleh patah sebentar, dan tetap tidak merasa kehilangan tempat.
+        </p>
+
+        <p>
+          Mungkin itu sebabnya kehadiranmu terasa berbeda. Kau bukan hanya indah untuk dilihat, tetapi juga teduh untuk ditinggali.
+        </p>
+      </article>
+
+      <button class="nav-btn nextBtn">halaman berikutnya</button>
+    </section>
+
+    <section class="page diary">
+      <article class="diary-box">
+        <span class="kicker">HALAMAN KETUJUH</span>
+        <h2>semesta pernah sangat baik</h2>
+
+        <p>
+          Dari begitu banyak kemungkinan yang bisa terjadi, dari begitu banyak jalan yang mungkin tidak pernah saling bersentuhan, semesta memilih membuatku mengenalmu.
+        </p>
+
+        <p>
+          Aku tidak tahu apakah itu kebetulan, takdir, atau hanya cara langit bercanda dengan lembut.
+        </p>
+
+        <p>
+          Yang kutahu, sejak kau ada, ada bagian dari hidupku yang tidak lagi berjalan dengan warna yang sama.
+        </p>
+      </article>
+
+      <button class="nav-btn nextBtn">lanjut ya</button>
+    </section>
+
+    <section class="page diary">
+      <article class="diary-box">
+        <span class="kicker">HALAMAN KEDELAPAN</span>
+        <h2>rindu yang tidak selalu berisik</h2>
+
+        <p>
+          Rindu kepadamu tidak selalu datang dengan suara keras. Kadang ia hadir sebagai jeda kecil di tengah hari.
+        </p>
+
+        <p>
+          Seperti saat aku ingin bercerita sesuatu yang remeh, lalu menyadari bahwa orang pertama yang ingin kutuju adalah kau.
+        </p>
+
+        <p>
+          Dari hal paling kecil sampai hal yang paling sulit kuucapkan, entah bagaimana namamu selalu menjadi tempat pikiranku pulang.
+        </p>
+      </article>
+
+      <button class="nav-btn nextBtn">satu lagi</button>
+    </section>
+
+    <section class="page diary">
+      <article class="diary-box">
+        <span class="kicker">HALAMAN KESEMBILAN</span>
+        <h2>aku ingin menjagamu dengan sederhana</h2>
+
+        <p>
+          Aku tidak selalu punya cara paling megah untuk mencintai. Tidak selalu punya kalimat yang sempurna, tidak selalu punya tangan yang mampu merapikan seluruh luka.
+        </p>
+
+        <p>
+          Namun aku ingin belajar menjagamu dengan cara cara kecil. Dengan hadir, dengan mendengar, dengan tidak pergi hanya karena hari sedang sulit.
+        </p>
+
+        <p>
+          Sebab bagiku, mencintaimu bukan tentang menjadi sempurna. Mencintaimu adalah tentang tetap memilih tinggal, bahkan ketika dunia meminta kita menjadi lelah.
+        </p>
+      </article>
+
+      <button class="nav-btn nextBtn">buka halaman ini pelan pelan</button>
+    </section>
+
+    <section class="page diary">
+      <article class="diary-box">
+        <span class="kicker">HALAMAN KESEPULUH</span>
+        <h2>bila nanti ada musim yang berat</h2>
+
+        <p>
+          Bila suatu hari kita sampai pada musim yang tidak mudah, semoga kita tidak saling melepaskan hanya karena angin sedang terlalu kencang.
+        </p>
+
+        <p>
+          Semoga kita ingat bahwa tidak semua yang sulit berarti harus selesai. Ada hal hal yang justru tumbuh karena pernah bertahan di tanah yang keras.
+        </p>
+
+        <p>
+          Aku ingin kita menjadi dua hati yang tetap belajar. Tidak selalu benar, tidak selalu paham, tetapi selalu ingin menemukan jalan pulang yang sama.
+        </p>
+      </article>
+
+      <button class="nav-btn nextBtn">lanjutkan lagi</button>
+    </section>
+
+    <section class="page diary">
+      <article class="diary-box">
+        <span class="kicker">HALAMAN KESEBELAS</span>
+        <h2>kalau aku boleh meminta pada langit</h2>
+
+        <p>
+          Kalau aku boleh meminta satu hal pada langit, aku tidak akan meminta semua hari menjadi mudah.
+        </p>
+
+        <p>
+          Aku hanya ingin diberi hati yang cukup lapang untuk mencintaimu dengan baik, cukup sabar untuk memahami, dan cukup lembut untuk tidak melukai hal yang paling ingin kujaga.
+        </p>
+
+        <p>
+          Karena kau bukan sekadar seseorang yang singgah. Kau adalah bab yang ingin kubaca ulang, bahkan ketika aku sudah hafal setiap barisnya.
+        </p>
+      </article>
+
+      <button class="nav-btn nextBtn">halaman terakhir</button>
+    </section>
+
+    <section class="page diary">
+      <article class="diary-box">
+        <span class="kicker">HALAMAN TERAKHIR</span>
+        <h2>dan bila halaman ini menutup dirinya</h2>
+
+        <p>
+          Jangan anggap ini selesai hanya karena halaman terakhir telah sampai. Ada rasa yang tidak habis hanya karena buku kecil ini berhenti berputar.
+        </p>
+
+        <p>
+          Di luar layar ini, aku masih akan tetap menjadi seseorang yang diam diam berterima kasih karena pernah dipertemukan denganmu.
+        </p>
+
+        <p>
+          Bila semesta adalah kitab panjang yang belum selesai ditulis, maka kau adalah salah satu aksara paling indah yang ingin terus kujaga maknanya.
+        </p>
+
+        <p class="final-quote">À toi, mon plus tendre chapitre.</p>
+      </article>
+
+      <button class="nav-btn" id="restartBtn">baca dari awal lagi</button>
+    </section>
+  </main>
+
+  <script>
+    const pages = Array.from(document.querySelectorAll(".page"));
+    const music = document.getElementById("music");
+    const openBtn = document.getElementById("openBtn");
+    const nextButtons = Array.from(document.querySelectorAll(".nextBtn"));
+    const restartBtn = document.getElementById("restartBtn");
+    const book = document.getElementById("book");
+
+    let current = 0;
+    let locked = false;
+    let musicStarted = false;
+
+    function startMusic() {
+      if (musicStarted) return;
+
+      music.volume = 0.56;
+
+      music.play().then(() => {
+        musicStarted = true;
+      }).catch(() => {});
+    }
+
+    function setActive(index) {
+      pages.forEach((page, i) => {
+        page.classList.toggle("active", i === index);
+      });
+
+      current = index;
+    }
+
+    function turnTo(index) {
+      if (locked) return;
+      if (index === current) return;
+      if (index < 0 || index >= pages.length) return;
+
+      locked = true;
+
+      const oldPage = pages[current];
+      const direction = index > current ? "forward" : "backward";
+      const leaf = oldPage.cloneNode(true);
+
+      leaf.classList.add("flip-leaf", direction);
+
+      leaf.querySelectorAll("button").forEach((button) => {
+        button.disabled = true;
+      });
+
+      book.appendChild(leaf);
+      setActive(index);
+
+      setTimeout(() => {
+        leaf.remove();
+        locked = false;
+      }, 1550);
+    }
+
+    openBtn.addEventListener("click", () => {
+      startMusic();
+      turnTo(1);
+    });
+
+    nextButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        startMusic();
+
+        const next = current + 1;
+
+        if (next < pages.length) {
+          turnTo(next);
+        }
+      });
+    });
+
+    restartBtn.addEventListener("click", () => {
+      turnTo(0);
+    });
+
+    let startX = 0;
+
+    document.addEventListener("touchstart", (event) => {
+      startX = event.changedTouches[0].screenX;
+    }, { passive: true });
+
+    document.addEventListener("touchend", (event) => {
+      const endX = event.changedTouches[0].screenX;
+      const distance = startX - endX;
+
+      if (Math.abs(distance) < 60 || locked) return;
+
+      if (distance > 0 && current < pages.length - 1) {
+        startMusic();
+        turnTo(current + 1);
+      }
+
+      if (distance < 0 && current > 0) {
+        turnTo(current - 1);
+      }
+    }, { passive: true });
+  </script>
+</body>
+</html>
